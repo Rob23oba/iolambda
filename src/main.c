@@ -57,12 +57,11 @@ int main(int argc, char **argv) {
 	parser_init(&parser, argv[argi], data, fsize);
 	struct expr expr = parse_expr(&parser);
 	free(data);
-	if (parser.has_error) {
+	if (parser.error_count) {
+		fprintf(stderr, "%d errors\n", parser.error_count);
 		expr_dec_rc(expr);
 		return 1;
 	}
-
-	printf("Parsing success!\n");
 
 	eval_by_reduce(expr, enable_trace);
 }

@@ -16,7 +16,7 @@ struct parser {
 	char * end;
 	char * line_start;
 	int line_number;
-	int has_error;
+	int error_count;
 };
 
 enum token_type {

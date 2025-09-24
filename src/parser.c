@@ -11,11 +11,11 @@ void parser_init(struct parser * parser, char * fname, char * str, size_t len) {
 	parser->end = str + len;
 	parser->line_start = str;
 	parser->line_number = 1;
-	parser->has_error = 0;
+	parser->error_count = 0;
 }
 
 #define parser_error(parser, fmt, ...) \
-	(void) (parser->has_error = 1, fprintf(stderr, "%s:%d:%d: error: " fmt "\n", (parser)->fname, (parser)->line_number, (int) ((parser)->str - (parser)->line_start), ##__VA_ARGS__))
+	(void) (parser->error_count++ < 100 ? fprintf(stderr, "%s:%d:%d: error: " fmt "\n", (parser)->fname, (parser)->line_number, (int) ((parser)->str - (parser)->line_start), ##__VA_ARGS__) : (void) 0)
 
 static int is_id_char(unsigned char ch) {
 	return ch >= 0x21 && ch != '\\' && ch != '(' && ch != ')' && ch != '.' && ch != ',';
