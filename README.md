@@ -32,3 +32,15 @@ Number | Name | Description                                  | New arguments
 3      | bit1 | Writes a 1 bit (big-endian)                  | None
 
 Currently, unknown operations behave like `halt`.
+
+Example
+-------
+
+Echo program:
+```
+\halt read bit0 bit1.
+(\cont. cont (\x f. f x)) \let.
+let (\f. (\x. f (x x)) (\x. f (x x))) \fix.
+fix \self. read \b. b bit1 bit0 self
+```
+This program reads a single bit and writes it in an infinite loop.
