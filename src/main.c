@@ -422,13 +422,13 @@ void write_num(unsigned int val, char ** str) {
 	} while (val > 0);
 }
 
-void dbg_print_expr_size(struct expr expr, size_t * size, int prec) {
+void dbg_print_expr_size(struct expr expr, size_t * size, int parens) {
 	if (expr.lam_count > 0) {
-		if (prec != 0) {
+		if (parens & 1) {
 			*size += 2;
 		}
 		*size += num_length(expr.lam_count) + 7;
-		prec = 0;
+		parens = 0;
 	}
 	if (expr.node == NULL) {
 		*size += 4;
@@ -441,18 +441,18 @@ void dbg_print_expr_size(struct expr expr, size_t * size, int prec) {
 		int num = expr_node_get_op(expr.node);
 		*size += num_length(num);
 	} else {
-		if (prec > 1) {
+		if (parens & 2) {
 			*size += 2;
 		}
 		*size += 1;
 		dbg_print_expr_size(expr.node->fn, size, 1);
-		dbg_print_expr_size(expr.node->arg, size, 2);
+		dbg_print_expr_size(expr.node->arg, size, parens & 2 ? 2 : parens | 2);
 	}
 }
 
-void dbg_print_expr(struct expr expr, char ** out, int prec) {
+void dbg_print_expr(struct expr expr, char ** out, int parens) {
 	if (expr.lam_count > 0) {
-		if (prec != 0) {
+		if (parens & 1) {
 			*(*out)++ = '(';
 		}
 		*(*out)++ = 'l';
@@ -465,7 +465,7 @@ void dbg_print_expr(struct expr expr, char ** out, int prec) {
 		}
 		*(*out)++ = ' ';
 		dbg_print_expr((struct expr) { .node = expr.node, .lam_count = 0 }, out, 0);
-		if (prec != 0) {
+		if (parens & 1) {
 			*(*out)++ = ')';
 		}
 		return;
@@ -484,13 +484,13 @@ void dbg_print_expr(struct expr expr, char ** out, int prec) {
 		int num = expr_node_get_op(expr.node);
 		write_num(num, out);
 	} else {
-		if (prec > 1) {
+		if (parens & 2) {
 			*(*out)++ = '(';
 		}
 		dbg_print_expr(expr.node->fn, out, 1);
 		*(*out)++ = ' ';
-		dbg_print_expr(expr.node->arg, out, 2);
-		if (prec > 1) {
+		dbg_print_expr(expr.node->arg, out, parens & 2 ? 2 : parens | 2);
+		if (parens & 2) {
 			*(*out)++ = ')';
 		}
 	}
