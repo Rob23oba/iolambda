@@ -1,0 +1,6 @@
+#include "main.c"
+#include "expr.c"
+#include "parser.c"
+#include "print_expr.c"
+#include "beta_eval.c"
+#include "expr_buf.c"

@@ -8,5 +8,5 @@ if not defined DevEnvDir (
 if not exist bin mkdir bin
 
 pushd src
-cl /O2 /W3 main.c /Fo:..\bin\ /link /out:..\bin\iolambda.exe
+cl /O2 /W3 all.c /Fo:..\bin\ /link /out:..\bin\iolambda.exe
 popd
